@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <div class="buttonInLk">
+        <a href="{% url 'catalogapp:catalog_add' %}">Добавить товар</a>
+    </div>
+    <div>
+        <table class="table text-info">
+            <tr class="bg-info">
+                <th>Название товара</th>
+                <th>Дата поступления</th>
+                <th>Цена</th>
+                <th>Единица измерения</th>
+                <th>Наименование поставщика</th>
+            </tr>
+            {% for object in object_list %}
+                <tr>
+                    <td>{{ object.name }}</td>
+                    <td>{{ object.dates }}</td>
+                    <td>{{ object.price }}</td>
+                    <td>{{ object.unit }}</td>
+                    <td>{{ object.name_supplier }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+{% endblock %}
