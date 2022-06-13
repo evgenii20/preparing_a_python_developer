@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <div class="buttonInLk">
+        <a href="{% url 'catalogapp:product' %}">В продукты</a>
+        {#<a href="{% url 'catalogapp:part' %}">В разделы</a>#}
+    </div>
+    <div>
+        {{ user.name }} {{ user.age }}
+    </div>
+    <div>
+        <table class="table text-info">
+            <tr class="bg-info">
+                <th>Раздел</th>
+                <th>Название товара</th>
+                <th>Дата поступления</th>
+                <th>Цена</th>
+                <th>Единица измерения</th>
+                <th>Наименование поставщика</th>
+            </tr>
+            {% for object in object_list %}
+                {% for item in object.product_catalog.all %}
+                    {# Для проверки: {{ item.name }}#}
+                <tr>
+                    <td>{{ object.part_list }}</td>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.dates }}</td>
+                    <td>{{ item.price }}</td>
+                    {% if item.unit == 'P' %}
+                        <td>{{ 'шт' }}</td>
+                    {% else %}
+                        <td>{{ 'кг' }}</td>
+                    {% endif %}
+                    <td>{{ item.name_supplier }}</td>
+                </tr>
+                {% endfor %}
+            {% endfor %}
+        </table>
+    </div>
+
+{% endblock %}
