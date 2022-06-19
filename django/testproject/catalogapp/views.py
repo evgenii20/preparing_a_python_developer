@@ -1,9 +1,10 @@
+from django.contrib.sites.shortcuts import get_current_site
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, TemplateView, CreateView
 
 from catalogapp.forms import ProductCreateForm, SectionForm
-from catalogapp.models import ProductCatalog, Section
+from .models import ProductCatalog, Section
 
 
 # Create your views here.
@@ -64,16 +65,21 @@ class ProductCatalogListView(ListView):
 class SectionListView(ListView):
     """Для вывода списка разделов и товаров"""
     model = Section
+    # queryset = Section.objects.prefetch_related('product_catalog').all()
+    # queryset = Section.on_site.prefetch_related('product_catalog').all()
+    # queryset = Section.objects.not_deleted().prefetch_related('product_catalog').all()
+    queryset = Section.on_site.prefetch_related('product_catalog').all()
     template_name = 'part_list.html'
-    form_class = SectionForm
+    # form_class = SectionForm
 
-    def get_queryset(self):
-        # queryset = Section.objects.all()  # 6 запросов к БД
-
-        # queryset = Section.objects.select_related('product_catalog').all()
-        queryset = Section.objects.prefetch_related('product_catalog').all()
-        # queryset = Section.objects.select_related('part_list').all()
-        return queryset
+    # def get_queryset(self):
+    #     # queryset = Section.objects.all()  # 6 запросов к БД
+    #
+    #     # queryset = Section.objects.select_related('product_catalog').all()
+    #     # вынес из метода в класс 68 стр.
+    #     queryset = Section.objects.prefetch_related('product_catalog').all()
+    #     # queryset = Section.objects.select_related('part_list').all()
+    #     return queryset
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -81,6 +87,8 @@ class SectionListView(ListView):
         context['title'] = title
         context.update({
             # 'user': {'name': 'Ivan', 'age': '31'}
+            # Передаём в контент на странице
+            'site': get_current_site(request=self.request)
         })
         return context
 
@@ -117,6 +125,7 @@ class PartKeyListView(ListView):
         sections = self.kwargs['pk']
         # queryset = Section.objects.filter(sections_id=sections).filter()
         queryset = Section.objects.filter(id=sections).prefetch_related('product_catalog')
+        # queryset = Section.on_site.filter(id=sections).prefetch_related('product_catalog')
         # queryset = Section.objects.all()
         return queryset
 
@@ -127,6 +136,7 @@ class PartKeyListView(ListView):
         title = 'Товары в категории'
         context['title'] = title
         context['object_list'] = Section.objects.filter(id=sections_id)
+        # context['object_list'] = Section.on_site.filter(id=sections_id)
         # context['title'] = f'Раздел «{category.part}»'
         return context
 

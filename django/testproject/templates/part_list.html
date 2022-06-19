@@ -6,24 +6,31 @@
 <!--        <a href="{% url 'catalogapp:product' %}">В продукты</a>-->
     </div>
     <div>
+{#        {{ site.name }}#}
         {{ user.name }} {{ user.age }}
     </div>
     <div>
         <table class="table text-info">
             <tr class="bg-info">
+                <th>Удалён</th>
                 <th>Раздел</th>
                 <th>Название товара</th>
                 <th>Дата поступления</th>
                 <th>Цена</th>
                 <th>Единица измерения</th>
                 <th>Наименование поставщика</th>
+                <th>Сайт</th>
             </tr>
             {#{{ queryset }}#}
+{#        {{ object_list }}#}
             {% for object in object_list %}
+{#                {% for item in object.product_catalog.all %}#}
                 {% for item in object.product_catalog.all %}
                     {# Для проверки: {{ item.name }}#}
+{#                    {% if item.deleted == False %}#}
                 <tr>
 {#                    <td>{{ object.part_list }}</td>#}
+                    <td>{{ item.deleted }}</td>
                     <td><a href="{% url 'catalogapp:part_key' object.id %}">{{ object.part_list }}</a></td>
                     <td>{{ item.name }}</td>
                     <td>{{ item.dates }}</td>
@@ -34,7 +41,9 @@
                         <td>{{ 'кг' }}</td>
                     {% endif %}
                     <td>{{ item.name_supplier }}</td>
+                    <td>{{ object.site.name }}</td>
                 </tr>
+{#                    {% endif %}#}
                 {% endfor %}
             {% endfor %}
         </table>
