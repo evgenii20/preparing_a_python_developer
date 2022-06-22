@@ -1,6 +1,6 @@
 from django import forms
 
-from catalogapp.models import ProductCatalog
+from catalogapp.models import ProductCatalog, Section
 
 
 class ProductCreateForm(forms.ModelForm):
@@ -27,3 +27,17 @@ class ProductCreateForm(forms.ModelForm):
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
             # field.widget.attrs['class'] = 'inputFild'
+
+
+class SectionForm(forms.ModelForm):
+    """Чтение и изменение объекта каталога"""
+
+    class Meta:
+        model = Section
+        fields = '__all__'
+
+    # def __init__(self, *args, **kwargs):
+    #     super(SectionForm, self).__init__(*args, **kwargs)
+    #
+    #     for field_name, field in self.fields.items():
+    #         field.widget.attrs['class'] = 'form-control'
